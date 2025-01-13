@@ -1,8 +1,20 @@
 /*
-gcc matmul.c -o matmul \
-    -I/usr/include/mkl \
-    -L/usr/lib/x86_64-linux-gnu \
-    -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm
+ * Singl-threaded flags: 
+        gcc matmul.c -o matmul \
+            -I/usr/include/mkl \
+            -L/usr/lib/x86_64-linux-gnu \
+            -Wl,--no-as-needed -lmkl_intel_lp64 \ 
+            -lmkl_sequential \ 
+            -lmkl_core -lpthread -lm
+
+ * Multi-threaded flags:
+        gcc matmul.c -o matmul \     
+            -I/usr/include/mkl \ 
+            -L/usr/lib/x86_64-linux-gnu \     
+            -Wl,--no-as-needed -lmkl_intel_lp64 \
+            -lmkl_gnu_thread \ 
+            -lmkl_core -lpthread -lm \ 
+            -lgomp -fopenmp \
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,6 +29,10 @@ gcc matmul.c -o matmul \
     #define K 4096
 #endif 
 
+#ifndef NITER
+    #define NITER 5
+#endif
+
 double get_time() {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -28,6 +44,7 @@ int main() {
     double alpha = 1.0, beta = 0.0;
     double start_time, end_time, elapsed_time;
     double gflops;
+    double GFLOPS = 0.0, TOT_TIME = 0.0;
 
     // Allocate memory for matrices
     A = (double*)mkl_malloc(M * K * sizeof(double), 64);
@@ -64,26 +81,30 @@ int main() {
                 C, N); // ldc = N for row-major
 
     // Actual timing run
-    start_time = get_time();
+    for(int i=0; i<NITER; i++){
+        start_time = get_time();
 
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
-                M, N, K,
-                alpha,
-                A, K,
-                B, N,
-                beta,
-                C, N);
+        cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+                    M, N, K,
+                    alpha,
+                    A, K,
+                    B, N,
+                    beta,
+                    C, N);
 
-    end_time = get_time();
-    elapsed_time = end_time - start_time;
+        end_time = get_time();
+        elapsed_time = end_time - start_time;
+        TOT_TIME += elapsed_time;
 
-    // Calculate GFLOPS
-    // For matrix multiplication, FLOPS = 2 * M * N * K
-    gflops = (2.0 * M * N * K) / (elapsed_time * 1e9);
+        // Calculate GFLOPS
+        // For matrix multiplication, FLOPS = 2 * M * N * K
+        gflops = (2.0 * M * N * K) / (elapsed_time * 1e9);
+        GFLOPS += gflops;
+    }
 
     printf("Matrix dimensions: %d x %d x %d\n", M, N, K);
-    printf("Time elapsed: %.3f seconds\n", elapsed_time);
-    printf("Performance: %.2f GFLOPS\n", gflops);
+    printf("Time elapsed: %.3f seconds\n", TOT_TIME / NITER);
+    printf("Performance: %.2f GFLOPS\n", GFLOPS / NITER);
 
     // Free memory
     mkl_free(A);
