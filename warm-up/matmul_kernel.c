@@ -11,9 +11,9 @@
 #define MEMALIGN 64
 
 // defining dimensions
-#define DIMM 128
-#define DIMN 128
-#define DIMK 128
+#define DIMM 4096
+#define DIMN 4096
+#define DIMK 4096
 
 #ifndef NITER
     #define NITER 5
@@ -41,8 +41,8 @@ uint64_t timer() {
 void matmul_naive(float* A, float* B, float* C, const int32_t M, const int32_t N, const int32_t K)
 {
     for(int i = 0; i < M; i++){
-        for(int j = 0; j < N; j++){
             for(int p = 0; p < K; p++){
+        for(int j = 0; j < N; j++){
                 C[i*M + j] += A[i*N + p] * B[p*K + j];
             }
         }
