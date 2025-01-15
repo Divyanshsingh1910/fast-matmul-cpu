@@ -1,0 +1,188 @@
+BRGEMM Performance Tests
+======================
+Wed Jan 15 09:52:34 AM EST 2025
+
+Batch Size: 1
+-------------
+FLOP: 34359738368.000
+Performing warmup runs...
+Performing timing runs...
+Run 1:
+  Execution Time: 10.664 ms
+  Performance: 3221.94 GFLOPS
+Run 2:
+  Execution Time: 10.707 ms
+  Performance: 3209.14 GFLOPS
+Run 3:
+  Execution Time: 10.707 ms
+  Performance: 3208.95 GFLOPS
+Run 4:
+  Execution Time: 10.745 ms
+  Performance: 3197.88 GFLOPS
+Run 5:
+  Execution Time: 10.533 ms
+  Performance: 3262.12 GFLOPS
+
+Average over 5 runs: 10.671 ms (3219.85 GFLOPS)
+
+Batch Size: 2
+-------------
+FLOP: 68719476736.000
+Performing warmup runs...
+Performing timing runs...
+Run 1:
+  Execution Time: 12.671 ms
+  Performance: 5423.40 GFLOPS
+Run 2:
+  Execution Time: 12.733 ms
+  Performance: 5397.08 GFLOPS
+Run 3:
+  Execution Time: 12.876 ms
+  Performance: 5337.11 GFLOPS
+Run 4:
+  Execution Time: 12.900 ms
+  Performance: 5326.94 GFLOPS
+Run 5:
+  Execution Time: 13.002 ms
+  Performance: 5285.36 GFLOPS
+
+Average over 5 runs: 12.836 ms (5353.51 GFLOPS)
+
+Batch Size: 4
+-------------
+FLOP: 137438953472.000
+Performing warmup runs...
+Performing timing runs...
+Run 1:
+  Execution Time: 25.214 ms
+  Performance: 5450.98 GFLOPS
+Run 2:
+  Execution Time: 25.279 ms
+  Performance: 5436.85 GFLOPS
+Run 3:
+  Execution Time: 25.223 ms
+  Performance: 5449.02 GFLOPS
+Run 4:
+  Execution Time: 25.184 ms
+  Performance: 5457.37 GFLOPS
+Run 5:
+  Execution Time: 25.136 ms
+  Performance: 5467.87 GFLOPS
+
+Average over 5 runs: 25.207 ms (5452.40 GFLOPS)
+
+Batch Size: 8
+-------------
+FLOP: 274877906944.000
+Performing warmup runs...
+Performing timing runs...
+Run 1:
+  Execution Time: 52.524 ms
+  Performance: 5233.34 GFLOPS
+Run 2:
+  Execution Time: 52.532 ms
+  Performance: 5232.54 GFLOPS
+Run 3:
+  Execution Time: 52.555 ms
+  Performance: 5230.31 GFLOPS
+Run 4:
+  Execution Time: 52.548 ms
+  Performance: 5230.97 GFLOPS
+Run 5:
+  Execution Time: 52.558 ms
+  Performance: 5230.01 GFLOPS
+
+Average over 5 runs: 52.544 ms (5231.43 GFLOPS)
+
+Batch Size: 12
+-------------
+FLOP: 412316860416.000
+Performing warmup runs...
+Performing timing runs...
+Run 1:
+  Execution Time: 80.105 ms
+  Performance: 5147.23 GFLOPS
+Run 2:
+  Execution Time: 80.142 ms
+  Performance: 5144.83 GFLOPS
+Run 3:
+  Execution Time: 80.143 ms
+  Performance: 5144.77 GFLOPS
+Run 4:
+  Execution Time: 80.167 ms
+  Performance: 5143.25 GFLOPS
+Run 5:
+  Execution Time: 80.042 ms
+  Performance: 5151.26 GFLOPS
+
+Average over 5 runs: 80.120 ms (5146.27 GFLOPS)
+
+Batch Size: 16
+-------------
+FLOP: 549755813888.000
+Performing warmup runs...
+Performing timing runs...
+Run 1:
+  Execution Time: 101.309 ms
+  Performance: 5426.51 GFLOPS
+Run 2:
+  Execution Time: 101.252 ms
+  Performance: 5429.57 GFLOPS
+Run 3:
+  Execution Time: 101.209 ms
+  Performance: 5431.90 GFLOPS
+Run 4:
+  Execution Time: 101.527 ms
+  Performance: 5414.90 GFLOPS
+Run 5:
+  Execution Time: 101.609 ms
+  Performance: 5410.53 GFLOPS
+
+Average over 5 runs: 101.381 ms (5422.67 GFLOPS)
+
+Batch Size: 32
+-------------
+FLOP: 1099511627776.000
+Performing warmup runs...
+Performing timing runs...
+Run 1:
+  Execution Time: 214.229 ms
+  Performance: 5132.41 GFLOPS
+Run 2:
+  Execution Time: 208.595 ms
+  Performance: 5271.03 GFLOPS
+Run 3:
+  Execution Time: 207.206 ms
+  Performance: 5306.37 GFLOPS
+Run 4:
+  Execution Time: 216.573 ms
+  Performance: 5076.87 GFLOPS
+Run 5:
+  Execution Time: 206.710 ms
+  Performance: 5319.10 GFLOPS
+
+Average over 5 runs: 210.663 ms (5219.30 GFLOPS)
+
+Batch Size: 64
+-------------
+FLOP: 2199023255552.000
+Performing warmup runs...
+Performing timing runs...
+Run 1:
+  Execution Time: 448.358 ms
+  Performance: 4904.61 GFLOPS
+Run 2:
+  Execution Time: 456.740 ms
+  Performance: 4814.60 GFLOPS
+Run 3:
+  Execution Time: 456.803 ms
+  Performance: 4813.94 GFLOPS
+Run 4:
+  Execution Time: 459.000 ms
+  Performance: 4790.90 GFLOPS
+Run 5:
+  Execution Time: 454.721 ms
+  Performance: 4835.98 GFLOPS
+
+Average over 5 runs: 455.125 ms (4831.70 GFLOPS)
+

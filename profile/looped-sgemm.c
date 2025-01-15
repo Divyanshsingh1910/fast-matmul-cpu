@@ -10,7 +10,8 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <time.h>
-#include <cblas.h>
+//#include <cblas.h>
+#include <mkl_cblas.h>
 
 #define MEMALIGN 64
 
@@ -135,7 +136,7 @@ void sgemm(float* A, float* B, float* C,  int32_t M, const int32_t N, const int3
 void (*matmul_kernel)(float* A, float* B, float* C, const int32_t M, const int32_t N, const int32_t K);
 
 int main() {
-    matmul_kernel = looped_sgemm;
+    matmul_kernel = sgemm;
     srand(1);  // For reproducible results
     
     const int32_t M = DIMM;
