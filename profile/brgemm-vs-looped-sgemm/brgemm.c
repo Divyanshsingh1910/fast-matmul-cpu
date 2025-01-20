@@ -140,6 +140,42 @@ void brgemm_kernel(float* A, float* B, float* C, const int32_t B_dim, const int3
     free(C_array);
 }
 
+void brgemm_kernel_strided(float* A, float* B, float* C, const int32_t B_dim, const int32_t T, const int32_t H) {
+    /*
+    * A: (B, T, H)
+    * B: (B, H, T)
+    * C: (B, T, T)
+    */
+    const float alpha = 1.0f;
+    const float beta = 0.0f;
+
+    // BRGEMM parameters
+    MKL_INT batch_size = B_dim;
+    MKL_INT m = T;
+    MKL_INT n = T;
+    MKL_INT k = H;
+    MKL_INT lda = H;
+    MKL_INT ldb = T;
+    MKL_INT ldc = T;
+    MKL_INT stridea = T * H;
+    MKL_INT strideb = H * T;
+    MKL_INT stridec = T * T;
+    
+    const CBLAS_TRANSPOSE transa = CblasNoTrans;
+    const CBLAS_TRANSPOSE transb = CblasNoTrans;
+    
+    // Perform batched GEMM using strided API
+    cblas_sgemm_batch_strided(CblasRowMajor, 
+                              transa, transb,
+                              m, n, k,
+                              alpha,
+                              A, lda, stridea,
+                              B, ldb, strideb,
+                              beta,
+                              C, ldc, stridec,
+                              batch_size);
+}
+
 void (*matmul_kernel)(float* A, float* B, float* C, const int32_t B_dim, const int32_t T, const int32_t H);
 
 
@@ -195,7 +231,8 @@ int main() {
     }
     
     // Test BRGEMM
-    matmul_kernel = brgemm_kernel;
+    /*matmul_kernel = brgemm_kernel;*/
+    matmul_kernel = brgemm_kernel_strided;
     init_const(C, 0.0f, B_dim * T, T);
     
     // Warmup runs
