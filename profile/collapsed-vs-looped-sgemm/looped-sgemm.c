@@ -10,8 +10,8 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <time.h>
-//#include <cblas.h>
-#include <mkl_cblas.h>
+#include <cblas.h>
+/*#include <mkl_cblas.h>*/
 
 #define MEMALIGN 64
 
