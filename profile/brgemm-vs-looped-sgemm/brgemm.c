@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <mkl/mkl.h>
+#include <mkl.h>
 
 #define MEMALIGN 64
 
