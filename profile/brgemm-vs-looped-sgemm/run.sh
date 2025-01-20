@@ -6,7 +6,7 @@ batch_sizes=(1 2 4 8 12 16 32 64)
 # Create results directory if it doesn't exist
 mkdir -p results
 
-# Create or clear the CSV file for results
+# Create CSV header
 echo "batch_size,method,time_ms,gflops" > results/benchmark_results.csv
 
 # Loop through each batch size
@@ -20,23 +20,11 @@ do
         -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl -fopenmp \
         -o brgemm_test -DDIMB=$batch
     
-    # Check if compilation was successful
     if [ $? -eq 0 ]; then
-        # Run the test and capture output
-        output=$(./brgemm_test)
-        
-        # Extract average times and GFLOPS for both methods using awk
-        looped_time=$(echo "$output" | grep "Looped SGEMM average" | awk '{print $6}')
-        looped_gflops=$(echo "$output" | grep "Looped SGEMM average" | awk -F'(' '{print $2}' | awk '{print $1}')
-        brgemm_time=$(echo "$output" | grep "BRGEMM average" | awk '{print $6}')
-        brgemm_gflops=$(echo "$output" | grep "BRGEMM average" | awk -F'(' '{print $2}' | awk '{print $1}')
-        
-        # Save to CSV
-        echo "$batch,looped,$looped_time,$looped_gflops" >> results/benchmark_results.csv
-        echo "$batch,brgemm,$brgemm_time,$brgemm_gflops" >> results/benchmark_results.csv
-        
-        echo "  Looped SGEMM: $looped_time ms ($looped_gflops GFLOPS)"
-        echo "  BRGEMM: $brgemm_time ms ($brgemm_gflops GFLOPS)"
+        # Run and process output
+        ./brgemm_test | tail -n 2 | while read -r line; do
+            echo "$batch,$line" >> results/benchmark_results.csv
+        done
     else
         echo "Compilation failed for batch size $batch"
     fi

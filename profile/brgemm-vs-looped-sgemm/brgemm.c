@@ -10,7 +10,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <mkl.h>
+#ifdef LOCAL_MACHINE
+    #include<mkl/mkl.h>
+#else 
+    #include <mkl.h>
+#endif /* ifdef LOCAL_MACHINE
+ */
 
 #define MEMALIGN 64
 
@@ -137,17 +142,13 @@ void brgemm_kernel(float* A, float* B, float* C, const int32_t B_dim, const int3
 
 void (*matmul_kernel)(float* A, float* B, float* C, const int32_t B_dim, const int32_t T, const int32_t H);
 
+
 int main() {
     srand(1);  // For reproducible results
     
     const int32_t B_dim = DIMB;
     const int32_t T = DIMT;
     const int32_t H = DIMH;
-
-    printf("Matrix dimensions:\n");
-    printf("Batch size (B): %d\n", B_dim);
-    printf("Sequence length (T): %d\n", T);
-    printf("Hidden dim (H): %d\n", H);
 
     // Allocate memory for matrices
     float* A = (float*)aligned_alloc(MEMALIGN, B_dim * T * H * sizeof(float));
@@ -166,10 +167,9 @@ int main() {
     init_const(C, 0.0f, B_dim * T, T);
     init_const(C_ref, 0.0f, B_dim * T, T);
 
-    double FLOP = 2.0 * (double)B_dim * T * T * H;  // multiply-add per matrix multiply
-    printf("FLOP: %.3f G\n", FLOP/1e9);
+    double FLOP = 2.0 * (double)B_dim * T * T * H;
 
-    printf("\nTesting looped SGEMM...\n");
+    // Test looped SGEMM
     matmul_kernel = looped_sgemm;
     
     // Warmup runs
@@ -183,27 +183,18 @@ int main() {
         uint64_t start = timer();
         matmul_kernel(A, B, C, B_dim, T, H);
         uint64_t end = timer();
-
-        double exec_time = (end-start) * 1e-9;
-        double FLOPS = FLOP / exec_time;
-        total_time += exec_time;
-
-        printf("Run %d:\n", i+1);
-        printf("  Execution Time: %.3f ms\n", exec_time * 1000);
-        printf("  Performance: %.2f GFLOPS\n", FLOPS / 1e9);
+        total_time += (end-start) * 1e-9;
     }
-
-    printf("\nLooped SGEMM average over %d runs: %.3f ms (%.2f GFLOPS)\n", 
-           NITER, 
-           (total_time/NITER) * 1000, 
-           (FLOP / (total_time/NITER)) / 1e9);
+    
+    double looped_time_ms = (total_time/NITER) * 1000;
+    double looped_gflops = (FLOP / (total_time/NITER)) / 1e9;
 
     // Save reference output
     for(int i = 0; i < B_dim * T * T; i++) {
         C_ref[i] = C[i];
     }
     
-    printf("\nTesting BRGEMM...\n");
+    // Test BRGEMM
     matmul_kernel = brgemm_kernel;
     init_const(C, 0.0f, B_dim * T, T);
     
@@ -218,20 +209,16 @@ int main() {
         uint64_t start = timer();
         matmul_kernel(A, B, C, B_dim, T, H);
         uint64_t end = timer();
-
-        double exec_time = (end-start) * 1e-9;
-        double FLOPS = FLOP / exec_time;
-        total_time += exec_time;
-
-        printf("Run %d:\n", i+1);
-        printf("  Execution Time: %.3f ms\n", exec_time * 1000);
-        printf("  Performance: %.2f GFLOPS\n", FLOPS / 1e9);
+        total_time += (end-start) * 1e-9;
     }
 
-    printf("\nBRGEMM average over %d runs: %.3f ms (%.2f GFLOPS)\n", 
-           NITER, 
-           (total_time/NITER) * 1000, 
-           (FLOP / (total_time/NITER)) / 1e9);
+    double brgemm_time_ms = (total_time/NITER) * 1000;
+    double brgemm_gflops = (FLOP / (total_time/NITER)) / 1e9;
+
+    // Print results in CSV format
+    printf("method,time_ms,gflops\n");
+    printf("looped,%.3f,%.2f\n", looped_time_ms, looped_gflops);
+    printf("brgemm,%.3f,%.2f\n", brgemm_time_ms, brgemm_gflops);
 
     // Verify results match
     compare_mats(C, C_ref, B_dim, T, T);
