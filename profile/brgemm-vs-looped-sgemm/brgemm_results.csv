@@ -1,0 +1,39 @@
+Testing batch size: 1
+method,time_ms,gflops
+looped,2.035,4221.01
+brgemm,2.093,4104.08
+      
+Testing batch size: 2
+method,time_ms,gflops
+looped,6.845,2509.92
+brgemm,6.378,2693.42
+      
+Testing batch size: 4
+method,time_ms,gflops
+looped,8.575,4007.19
+brgemm,5.728,5998.08
+      
+Testing batch size: 8
+method,time_ms,gflops
+looped,22.664,3032.12
+brgemm,12.452,5518.72
+      
+Testing batch size: 12
+method,time_ms,gflops
+looped,34.081,3024.55
+brgemm,28.934,3562.62
+      
+Testing batch size: 16
+method,time_ms,gflops
+looped,45.538,3018.09
+brgemm,30.123,4562.62
+      
+Testing batch size: 32
+method,time_ms,gflops
+looped,91.151,3015.62
+brgemm,51.325,5355.59
+      
+Testing batch size: 64
+method,time_ms,gflops
+looped,188.722,2913.04
+brgemm,114.816,4788.13

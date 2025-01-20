@@ -22,9 +22,10 @@ do
     
     if [ $? -eq 0 ]; then
         # Run and process output
-        ./brgemm_test | tail -n 2 | while read -r line; do
-            echo "$batch,$line" >> results/benchmark_results.csv
-        done
+   #     ./brgemm_test | tail -n 2 | while read -r line; do
+   #         echo "$batch,$line" >> results/benchmark_results.csv
+   #     done
+   	./brgemm_test
     else
         echo "Compilation failed for batch size $batch"
     fi
