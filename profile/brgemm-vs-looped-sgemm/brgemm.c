@@ -101,7 +101,6 @@ void brgemm_kernel(float* A, float* B, float* C, const int32_t B_dim, const int3
     const float alpha = 1.0f;
     const float beta = 0.0f;
     
-    // Create BRGEMM descriptor
     MKL_INT batch_size = B_dim;
     MKL_INT m = T;
     MKL_INT n = T;
@@ -110,22 +109,19 @@ void brgemm_kernel(float* A, float* B, float* C, const int32_t B_dim, const int3
     MKL_INT ldb = T;
     MKL_INT ldc = T;
     
-    // Arrays to hold matrix addresses for each batch
     float** A_array = (float**)malloc(batch_size * sizeof(float*));
     float** B_array = (float**)malloc(batch_size * sizeof(float*));
     float** C_array = (float**)malloc(batch_size * sizeof(float*));
     
-    // Set up array of addresses
-    for (int i = 0; i < batch_size; i++) {
+        for (int i = 0; i < batch_size; i++) {
         A_array[i] = A + i * T * H;
         B_array[i] = B + i * H * T;
         C_array[i] = C + i * T * T;
     }
-    // Add these lines before the cblas_sgemm_batch call:
     const CBLAS_TRANSPOSE transa = CblasNoTrans;
     const CBLAS_TRANSPOSE transb = CblasNoTrans;
-    // Perform batched GEMM
-    cblas_sgemm_batch(CblasRowMajor, 
+
+        cblas_sgemm_batch(CblasRowMajor, 
                       &transa, &transb,
                       &m, &n, &k,
                       &alpha,
@@ -149,7 +145,6 @@ void brgemm_kernel_strided(float* A, float* B, float* C, const int32_t B_dim, co
     const float alpha = 1.0f;
     const float beta = 0.0f;
 
-    // BRGEMM parameters
     MKL_INT batch_size = B_dim;
     MKL_INT m = T;
     MKL_INT n = T;
@@ -164,7 +159,6 @@ void brgemm_kernel_strided(float* A, float* B, float* C, const int32_t B_dim, co
     const CBLAS_TRANSPOSE transa = CblasNoTrans;
     const CBLAS_TRANSPOSE transb = CblasNoTrans;
     
-    // Perform batched GEMM using strided API
     cblas_sgemm_batch_strided(CblasRowMajor, 
                               transa, transb,
                               m, n, k,

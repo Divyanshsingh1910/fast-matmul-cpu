@@ -1,1 +1,6 @@
 /ml_env/*
+oneDNN/*
+*/log/
+*.out
+*.o 
+
