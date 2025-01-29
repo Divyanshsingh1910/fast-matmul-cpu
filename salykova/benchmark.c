@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
         int n = MAXSIZE;
         int k = MAXSIZE;
 #ifdef OPENBLAS
-        cblas_sgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1, A, m, B, k, 0, C, m);
+        cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1, A, m, B, k, 0, C, m);
 #else
         matmul(A, B, C, m, n, k);
 #endif
