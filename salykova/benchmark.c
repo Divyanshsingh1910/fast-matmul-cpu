@@ -1,3 +1,6 @@
+/*
+ * gcc -O3 -mno-avx512f -march=native -Isrc src/matmul.c src/kernel.c src/helper_matrix.c -DTEST -DNITER=5 -fopenmp benchmark.c -DSKIP_VERIFICATION -DNTHREADS=56 -DNC=6144 -DMC=64000 -o benchmark.out && ./benchmark.out 1024 8192 4 3
+*/
 #define _POSIX_C_SOURCE 199309L
 #include "helper_matrix.h"
 #include <immintrin.h>
@@ -6,7 +9,7 @@
 #include <time.h>
 
 #ifdef OPENBLAS
-    #include <cblas.h>
+    #include <openblas/cblas.h>
 #else
     #include "matmul.h"
 #endif
@@ -106,7 +109,7 @@ int main(int argc, char* argv[]) {
         double min_exec_time = 1e69;
         int n_iter = (int)(40000 / matsize);
         n_iter = n_iter > 0 ? n_iter : 1;
-
+	n_iter = 3;
         for (int j = 0; j < n_iter; j++) {
             init_const(C, 0.0, matsize, matsize);
             uint64_t start = timer();
@@ -121,7 +124,7 @@ int main(int argc, char* argv[]) {
             min_exec_time = exec_time < min_exec_time ? exec_time : min_exec_time;
             avg_exec_time += exec_time;
         }
-
+#ifndef SKIP_VERIFICATION
         matmul_naive(A, B, C_ref, m, n, k);
         struct cmp_result result = compare_mats(C, C_ref, m, n); 
         printf("Results: #false: %i, #nans: %i, #inf: %i, avg_diff: %f\n\n", result.n_false, result.n_nans, result.n_inf, (double)result.tot_diff/result.n_false);
@@ -132,6 +135,7 @@ int main(int argc, char* argv[]) {
             printf("Calculated matrix: \n");
             print_mat(C, m, n); 
         #endif /* ifdef DEBUG */
+#endif
 
         avg_exec_time /= n_iter;
         avg_gflops[i] = (int)(FLOP / avg_exec_time / 1e9);
@@ -151,6 +155,7 @@ int main(int argc, char* argv[]) {
 #else
     const char* filename = "benchmark_matmul.txt";
 #endif
+#ifndef SKIP_VERIFICATION
     fptr = fopen(filename, "w");
     if (fptr == NULL) {
         printf("Error opening the file %s\n", filename);
@@ -161,5 +166,6 @@ int main(int argc, char* argv[]) {
     }
     fclose(fptr);
     printf("Saved in %s\n", filename);
+#endif
     return 0;
 }
