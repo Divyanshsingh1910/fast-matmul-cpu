@@ -1,5 +1,5 @@
 /*
- * gcc -O3 -mno-avx512f -march=native -Isrc src/matmul.c src/kernel.c src/helper_matrix.c -DTEST -DNITER=5 -fopenmp benchmark.c -DSKIP_VERIFICATION -DNTHREADS=56 -DNC=6144 -DMC=64000 -o benchmark.out && ./benchmark.out 1024 8192 4 3
+ gcc -O3 -mno-avx512f -march=native -Isrc src/matmul.c src/kernel.c src/helper_matrix.c -DTEST -DNITER=5 -fopenmp mkl_bench.c -L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl -DOPENBLAS -o benchmark.out -DSKIP_VERIFICATION && ./benchmark.out 1024 8192 4 3
 */
 #define _POSIX_C_SOURCE 199309L
 #include "helper_matrix.h"
@@ -9,7 +9,7 @@
 #include <time.h>
 
 #ifdef OPENBLAS
-    #include <openblas/cblas.h>
+    #include <mkl.h>
 #else
     #include "matmul.h"
 #endif
@@ -22,6 +22,7 @@ uint64_t timer() {
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     return (uint64_t)start.tv_sec * 1000000000 + (uint64_t)start.tv_nsec;
 }
+
 
 int main(int argc, char* argv[]) {
     srand(time(NULL));
@@ -67,7 +68,7 @@ int main(int argc, char* argv[]) {
         int n = MAXSIZE;
         int k = MAXSIZE;
 #ifdef OPENBLAS
-        cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1, A, m, B, k, 0, C, m);
+        cblas_sgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1, A, m, B, k, 0, C, m);
 #else
         matmul(A, B, C, m, n, k);
 #endif
