@@ -11,9 +11,6 @@
     #include "matmul.h"
 #endif
 
-#ifndef DEBUG
-    #define DEBUG 
-#endif
 
 #define MEMALIGN 64
 

@@ -1,17 +1,18 @@
 #include "kernel.h"
 #include "omp.h"
 #include <stdio.h>
+#include "helper_matrix.h"
 
 
 #define min(x, y) ((x) < (y) ? (x) : (y))
 
 #ifndef NTHREADS
-    #define NTHREADS 1
+    #define NTHREADS 4
 #endif
 
-#define MC (16 * NTHREADS * 2)
-#define NC (6 * NTHREADS * 71)
-#define KC 800
+#define MC (6 * NTHREADS * 71)
+#define NC (16 * NTHREADS * 2)
+#define KC 400
 
 static float blockA_packed[MC * KC] __attribute__((aligned(64)));
 static float blockB_packed[NC * KC] __attribute__((aligned(64)));
@@ -39,17 +40,11 @@ void pack_blockB(float* B, float* blockB_packed, int nc, int kc, int N) {
 void pack_panelA(float* A, float* blockA_packed, int mr, int kc, int K) {
     for (int p = 0; p < kc; p++) {
         for (int i = 0; i < mr; i++) {
-            #ifdef DEBUG
-                printf("pack_panelA: i=%d, p=%d, index=%d, A_addr=%p, blockA_packed_addr=%p, mr=%d, kc=%d, K=%d\n", i, p, i*K + p, &A[i*K + p], blockA_packed, mr, kc, K);
-            #endif /* ifdef DEBUG */
             *blockA_packed++ = A[i*K + p];
         }
         for (int i = mr; i < 6; i++) {
             *blockA_packed++ = 0;
         }
-        #ifdef DEBUG
-            printf("pack_panelA: is good here\n");
-        #endif /* ifdef DEBUG */
     }
 }
 
@@ -72,6 +67,7 @@ void matmul(float* A, float* B, float* C, int M, int N, int K) {
             pack_blockA(&A[i * K + p], blockA_packed, mc, kc, K);
                         #ifdef DEBUG
                             printf("Matrix A is packed\n");
+                            //print_mat(blockA_packed, mc*kc, 1); 
                         #endif /* ifdef DEBUG */
 
             for(int j = 0; j < N; j += NC) {
@@ -83,8 +79,9 @@ void matmul(float* A, float* B, float* C, int M, int N, int K) {
                         #endif /* ifdef DEBUG */
 
 
-/*#pragma omp parallel for collapse(2) num_threads(NTHREADS)*/
+#pragma omp parallel for collapse(2) num_threads(NTHREADS)
                 //inside the block of MCxNC work on a panel of MRxNR 
+                /*printf("mc=%i\tnc=%i\tkc=%i\n", mc, nc, kc);*/
                 for(int ir = 0; ir < mc; ir += 6) {
                     for(int jr = 0; jr < nc; jr += 16) {
                         int mr = min(6, mc - ir);
@@ -116,7 +113,7 @@ void matmul_naive(float* A, float* B, float* C, int m, int n, int k) {
     for (int i = 0; i < m; i++) {
             for (int p = 0; p < k; p++) {
         for (int j = 0; j < n; j++) {
-                C[i * m + j] += A[i * m + p] * B[p * k + j];
+                C[i * n + j] += A[i * k + p] * B[p * n + j];
             }
         }
     }

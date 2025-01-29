@@ -14,13 +14,13 @@ void print_m256i_binary(__m256i vec) {
 }
 
 
-int main() {
+int main(int argc, char* argv[]) {
 
     static int8_t mask[32]
         __attribute__((aligned(64))) = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                                         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0};
 
-    int mr = 13;
+    int mr = atoi(argv[1]);
 
     __m256i vmask = _mm256_cvtepi8_epi32(_mm_loadu_si64(&mask[16 - mr]));
     __m256i vmask1 = _mm256_cvtepi8_epi32(_mm_loadu_si64(&mask[16 - mr + 8]));

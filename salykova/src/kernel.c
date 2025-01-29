@@ -1,4 +1,6 @@
 #include "kernel.h"
+#include <stdio.h>
+#include <stdint.h>
 
 void kernel_16x6(float* blockA_packed,
                  float* blockB_packed,
@@ -7,6 +9,7 @@ void kernel_16x6(float* blockA_packed,
                  int nr,
                  int kc,
                  int n) {
+            //printf("mr=%i\tnr=%i\tkc=%i\n", mr, nr, kc);
     __m256 C00 = _mm256_setzero_ps();
     __m256 C01 = _mm256_setzero_ps();
     __m256 C10 = _mm256_setzero_ps();
@@ -35,14 +38,22 @@ void kernel_16x6(float* blockA_packed,
      *  c50 c51             |    
      *
     */
-
+    /*printf("kernel_16x6: mr=%d, nr=%d, kc=%d, n=%d\n", mr, nr, kc, n);*/
+    /*printf("blockA_packed[0]=%f, blockA_packed[1]=%f, ...\n", blockA_packed[0], blockA_packed[1]);*/
+    /*printf("blockB_packed[0]=%f, blockB_packed[1]=%f, ...\n", blockB_packed[0], blockB_packed[1]);*/
+    /*printf("C[0]=%f, C[1]=%f, ...\n", C[0], C[1]);*/
 
     __m256i packed_mask0;
     __m256i packed_mask1;
 
     if (nr != 16) {
-        packed_mask0 = _mm256_cvtepi8_epi32(_mm_loadu_si64(&mask[16 - mr]));
-        packed_mask1 = _mm256_cvtepi8_epi32(_mm_loadu_si64(&mask[16 - mr + 8]));
+        packed_mask0 = _mm256_cvtepi8_epi32(_mm_loadu_si64(&mask[16 - nr]));
+        packed_mask1 = _mm256_cvtepi8_epi32(_mm_loadu_si64(&mask[16 - nr + 8]));
+        /*
+        * for nr = 13 
+        * packed_mask0 = -1 -1 -1 -1 -1 -1 -1 -1  //8 x -1(each of 32 bit)
+        * packed_mask0 = -1 -1 -1 -1 -1  0  0  0  
+        */
         switch (mr) {
         case 1 :
             C00 = _mm256_maskload_ps(C, packed_mask0); 
@@ -185,8 +196,8 @@ void kernel_16x6(float* blockA_packed,
         C50 = _mm256_fmadd_ps(b0_packFloat8, a_packFloat8, C50);
         C51 = _mm256_fmadd_ps(b1_packFloat8, a_packFloat8, C51);
 
-        blockA_packed += 16;
-        blockB_packed += 6;
+        blockA_packed += 6;
+        blockB_packed += 16;
     }
     if (nr != 16) {
         switch (mr) {
