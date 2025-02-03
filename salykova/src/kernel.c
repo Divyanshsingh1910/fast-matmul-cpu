@@ -2,6 +2,85 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#ifndef MR_512
+    #define MR_512 6 
+    #define NR_512 32
+#endif /* ifndef MR */
+
+void kernel_32x6_avx512(float* blockA_packed,
+                 float* blockB_packed,
+                 float* C,
+                 int mr,
+                 int nr,
+                 int kc,
+                 int n) {
+            //printf("mr=%i\tnr=%i\tkc=%i\n", mr, nr, kc);
+    __mm512 C_regs[mr][2];
+
+    __m512 a_packFloat16;
+    __m512 b0_packFloat32;
+    __m512 b1_packFloat32;
+
+    /*
+     *                   Layout
+     *                ------------
+     *  c00 c01             |             --b0_packFloat32--|--b1_packFloat32-- 
+     *  c10 c11             |
+     *  c20 c21     =  a_packFloat32   *  
+     *  .....               |
+     *  c50 c51             |    
+     *
+    */
+    /*printf("kernel_16x6: mr=%d, nr=%d, kc=%d, n=%d\n", mr, nr, kc, n);*/
+    /*printf("blockA_packed[0]=%f, blockA_packed[1]=%f, ...\n", blockA_packed[0], blockA_packed[1]);*/
+    /*printf("blockB_packed[0]=%f, blockB_packed[1]=%f, ...\n", blockB_packed[0], blockB_packed[1]);*/
+    /*printf("C[0]=%f, C[1]=%f, ...\n", C[0], C[1]);*/
+
+    __mmask16 packed_mask0;
+    __mmask16 packed_mask1;
+
+    if (nr != NR_512) {
+        int32_t mask = (1U << nr) - 1;
+        packed_mask0 = (__mmask16)(mask & 0xFFFF);
+        packed_mask1 = (__mmask16)((mask >> 16) & 0xFFFF);
+
+        for(int i=0; i<mr; i++){
+            C_regs[i][0] = _mm512_mask_load_ps(C_regs[i][0], packed_mask0, &C[i*n]);
+            C_regs[i][1] = _mm512_mask_load_ps(C_regs[i][1], packed_mask1, &C[i*n + 16]);
+        }
+    } else {
+        for(int i=0; i<mr; i++){
+            C_regs[i][0] = _mm512_load_ps(&C[i*n]);
+            C_regs[i][1] = _mm512_load_ps(&C[i*n + 16]);
+        }
+    }
+    for (int p = 0; p < kc; p++) {
+        b0_packFloat32 = _mm512_loadu_ps(blockB_packed);
+        b1_packFloat32 = _mm512_loadu_ps(blockB_packed + 16);
+
+        for(int i=0; i<mr; i++){
+            a_packFloat16 = _mm512_broadcast_ss_ps((__mm128)(*(blockA_packed+i)));
+            
+            C_regs[i][0] = _mm512_fmadd_ps(b0_packFloat32, a_packFloat16, C_regs[i][0]);
+            C_regs[i][1] = _mm512_fmadd_ps(b1_packFloat32, a_packFloat16, C_regs[i][1]);
+        }
+
+        blockA_packed += MR_512;
+        blockB_packed += 32;
+    }
+    if (nr != NR_512) {
+        for(int i=0; i<mr; i++){
+            _mm512_mask_store_ps(&C[i*n], packed_mask0, C_regs[i][0]);
+            _mm512_mask_store_ps(&C[i*n + 16], packed_mask1, C_regs[i][1]);
+        }
+    } else {
+        for(int i=0; i<mr; i++){
+            _mm512_store_ps(&C[i*n],C_regs[i][0]);
+            _mm512_store_ps(&C[i*n + 16],C_regs[i][1]);
+        }
+    }
+}
+
 void kernel_16x6(float* blockA_packed,
                  float* blockB_packed,
                  float* C,
