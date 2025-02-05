@@ -2,12 +2,15 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#ifndef MR_512
-    #define MR_512 6 
-    #define NR_512 32
+#ifndef MR
+    #define MR 6
 #endif /* ifndef MR */
 
-void kernel_32x6_avx512(float* blockA_packed,
+
+#ifndef NR
+    #define NR 32
+#endif /* ifndef MR */
+void kernel_32x6_512(float* blockA_packed,
                  float* blockB_packed,
                  float* C,
                  int mr,
@@ -15,7 +18,7 @@ void kernel_32x6_avx512(float* blockA_packed,
                  int kc,
                  int n) {
             //printf("mr=%i\tnr=%i\tkc=%i\n", mr, nr, kc);
-    __mm512 C_regs[mr][2];
+    __m512 C_regs[mr][2];
 
     __m512 a_packFloat16;
     __m512 b0_packFloat32;
@@ -24,11 +27,11 @@ void kernel_32x6_avx512(float* blockA_packed,
     /*
      *                   Layout
      *                ------------
-     *  c00 c01             |             --b0_packFloat32--|--b1_packFloat32-- 
+     *  c00 c01             |             --b0_packFloat32--|--b1_packFloat32--
      *  c10 c11             |
-     *  c20 c21     =  a_packFloat32   *  
+     *  c20 c21     =  a_packFloat32   *
      *  .....               |
-     *  c50 c51             |    
+     *  c50 c51             |
      *
     */
     /*printf("kernel_16x6: mr=%d, nr=%d, kc=%d, n=%d\n", mr, nr, kc, n);*/
@@ -39,7 +42,7 @@ void kernel_32x6_avx512(float* blockA_packed,
     __mmask16 packed_mask0;
     __mmask16 packed_mask1;
 
-    if (nr != NR_512) {
+    if (nr != NR) {
         int32_t mask = (1U << nr) - 1;
         packed_mask0 = (__mmask16)(mask & 0xFFFF);
         packed_mask1 = (__mmask16)((mask >> 16) & 0xFFFF);
@@ -59,16 +62,16 @@ void kernel_32x6_avx512(float* blockA_packed,
         b1_packFloat32 = _mm512_loadu_ps(blockB_packed + 16);
 
         for(int i=0; i<mr; i++){
-            a_packFloat16 = _mm512_broadcast_ss_ps((__mm128)(*(blockA_packed+i)));
-            
+            a_packFloat16 = _mm512_broadcastss_ps(_mm_load_ss(blockA_packed+i));
+
             C_regs[i][0] = _mm512_fmadd_ps(b0_packFloat32, a_packFloat16, C_regs[i][0]);
             C_regs[i][1] = _mm512_fmadd_ps(b1_packFloat32, a_packFloat16, C_regs[i][1]);
         }
 
-        blockA_packed += MR_512;
+        blockA_packed += MR;
         blockB_packed += 32;
     }
-    if (nr != NR_512) {
+    if (nr != NR) {
         for(int i=0; i<mr; i++){
             _mm512_mask_store_ps(&C[i*n], packed_mask0, C_regs[i][0]);
             _mm512_mask_store_ps(&C[i*n + 16], packed_mask1, C_regs[i][1]);
@@ -110,11 +113,11 @@ void kernel_16x6(float* blockA_packed,
     /*
      *                   Layout
      *                ------------
-     *  c00 c01             |             --b0_packFloat8--|--b1_packFloat8-- 
+     *  c00 c01             |             --b0_packFloat8--|--b1_packFloat8--
      *  c10 c11             |
-     *  c20 c21     =  a_packFloat8   *  
+     *  c20 c21     =  a_packFloat8   *
      *  .....               |
-     *  c50 c51             |    
+     *  c50 c51             |
      *
     */
     /*printf("kernel_16x6: mr=%d, nr=%d, kc=%d, n=%d\n", mr, nr, kc, n);*/
@@ -129,23 +132,23 @@ void kernel_16x6(float* blockA_packed,
         packed_mask0 = _mm256_cvtepi8_epi32(_mm_loadu_si64(&mask[16 - nr]));
         packed_mask1 = _mm256_cvtepi8_epi32(_mm_loadu_si64(&mask[16 - nr + 8]));
         /*
-        * for nr = 13 
+        * for nr = 13
         * packed_mask0 = -1 -1 -1 -1 -1 -1 -1 -1  //8 x -1(each of 32 bit)
-        * packed_mask0 = -1 -1 -1 -1 -1  0  0  0  
+        * packed_mask0 = -1 -1 -1 -1 -1  0  0  0
         */
         switch (mr) {
         case 1 :
-            C00 = _mm256_maskload_ps(C, packed_mask0); 
+            C00 = _mm256_maskload_ps(C, packed_mask0);
             C01 = _mm256_maskload_ps(&C[8], packed_mask1);
             break;
         case 2 :
-            C00 = _mm256_maskload_ps(C, packed_mask0); 
+            C00 = _mm256_maskload_ps(C, packed_mask0);
             C01 = _mm256_maskload_ps(&C[8], packed_mask1);
             C10 = _mm256_maskload_ps(&C[n], packed_mask0);
             C11 = _mm256_maskload_ps(&C[n + 8], packed_mask1);
             break;
         case 3 :
-            C00 = _mm256_maskload_ps(C, packed_mask0); 
+            C00 = _mm256_maskload_ps(C, packed_mask0);
             C01 = _mm256_maskload_ps(&C[8], packed_mask1);
             C10 = _mm256_maskload_ps(&C[n], packed_mask0);
             C11 = _mm256_maskload_ps(&C[n + 8], packed_mask1);
@@ -153,7 +156,7 @@ void kernel_16x6(float* blockA_packed,
             C21 = _mm256_maskload_ps(&C[2 * n + 8], packed_mask1);
             break;
         case 4 :
-            C00 = _mm256_maskload_ps(C, packed_mask0); 
+            C00 = _mm256_maskload_ps(C, packed_mask0);
             C01 = _mm256_maskload_ps(&C[8], packed_mask1);
             C10 = _mm256_maskload_ps(&C[n], packed_mask0);
             C11 = _mm256_maskload_ps(&C[n + 8], packed_mask1);
@@ -163,7 +166,7 @@ void kernel_16x6(float* blockA_packed,
             C31 = _mm256_maskload_ps(&C[3 * n + 8], packed_mask1);
             break;
         case 5 :
-            C00 = _mm256_maskload_ps(C, packed_mask0); 
+            C00 = _mm256_maskload_ps(C, packed_mask0);
             C01 = _mm256_maskload_ps(&C[8], packed_mask1);
             C10 = _mm256_maskload_ps(&C[n], packed_mask0);
             C11 = _mm256_maskload_ps(&C[n + 8], packed_mask1);
@@ -175,7 +178,7 @@ void kernel_16x6(float* blockA_packed,
             C41 = _mm256_maskload_ps(&C[4 * n + 8], packed_mask1);
             break;
         case 6 :
-            C00 = _mm256_maskload_ps(C, packed_mask0); 
+            C00 = _mm256_maskload_ps(C, packed_mask0);
             C01 = _mm256_maskload_ps(&C[8], packed_mask1);
             C10 = _mm256_maskload_ps(&C[n], packed_mask0);
             C11 = _mm256_maskload_ps(&C[n + 8], packed_mask1);

@@ -20,7 +20,7 @@ void kernel_16x6(float* blockA_packed,
                  int m);
 
 
-void kernel_32x6_512f(float* blockA_packed,
+void kernel_32x6_512(float* blockA_packed,
                  float* blockB_packed,
                  float* C,
                  int mr,
