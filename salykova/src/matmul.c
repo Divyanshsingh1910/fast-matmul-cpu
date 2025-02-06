@@ -13,7 +13,7 @@
     #define MR 6
 #endif
 #ifndef NR
-    #define NR 16
+    #define NR 32
 #endif
 
 #ifndef MC
@@ -95,8 +95,11 @@ void matmul(float* A, float* B, float* C, int M, int N, int K) {
                 /*printf("mc=%i\tnc=%i\tkc=%i\n", mc, nc, kc);*/
                 for(int ir = 0; ir < mc; ir += MR) {
                     for(int jr = 0; jr < nc; jr += NR) {
-                        int mr = min(MR, mc - ir);
-                        int nr = min(NR, nc - jr);
+                        int mr = min(MR, mc - ir); //16 
+                        int nr = min(NR, nc - jr); //6
+
+                        // 4x4 ==> 16x16 ==> 16 --> dist ovoer omp theread 
+                        // per thread = 16 / 4  
 #ifdef AVX512
                         kernel_32x6_512(&blockA_packed[ir * kc],
                                     &blockB_packed[jr * kc],

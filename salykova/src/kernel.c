@@ -17,7 +17,7 @@ void kernel_32x6_512(float* blockA_packed,
                  int nr,
                  int kc,
                  int n) {
-            //printf("mr=%i\tnr=%i\tkc=%i\n", mr, nr, kc);
+
     __m512 C_regs[mr][2];
 
     __m512 a_packFloat16;
@@ -34,14 +34,12 @@ void kernel_32x6_512(float* blockA_packed,
      *  c50 c51             |
      *
     */
-    /*printf("kernel_16x6: mr=%d, nr=%d, kc=%d, n=%d\n", mr, nr, kc, n);*/
-    /*printf("blockA_packed[0]=%f, blockA_packed[1]=%f, ...\n", blockA_packed[0], blockA_packed[1]);*/
-    /*printf("blockB_packed[0]=%f, blockB_packed[1]=%f, ...\n", blockB_packed[0], blockB_packed[1]);*/
-    /*printf("C[0]=%f, C[1]=%f, ...\n", C[0], C[1]);*/
+
 
     __mmask16 packed_mask0;
     __mmask16 packed_mask1;
 
+    //loading the C elements into regs
     if (nr != NR) {
         int32_t mask = (1U << nr) - 1;
         packed_mask0 = (__mmask16)(mask & 0xFFFF);
@@ -57,6 +55,8 @@ void kernel_32x6_512(float* blockA_packed,
             C_regs[i][1] = _mm512_load_ps(&C[i*n + 16]);
         }
     }
+
+    //fetch form A and B, fma to C_regs
     for (int p = 0; p < kc; p++) {
         b0_packFloat32 = _mm512_loadu_ps(blockB_packed);
         b1_packFloat32 = _mm512_loadu_ps(blockB_packed + 16);
@@ -71,6 +71,8 @@ void kernel_32x6_512(float* blockA_packed,
         blockA_packed += MR;
         blockB_packed += 32;
     }
+
+    //store the output into the C array
     if (nr != NR) {
         for(int i=0; i<mr; i++){
             _mm512_mask_store_ps(&C[i*n], packed_mask0, C_regs[i][0]);
