@@ -6,9 +6,33 @@
     #define NTHREADS 56
 #endif
 
-#define MC (16 * NTHREADS * 2)
-#define NC (6 * NTHREADS * 71)
-#define KC 800
+#ifndef MR
+    #define MR 16
+#endif
+
+#ifndef NR
+    #define NR 6
+#endif
+
+#ifndef MC_factor
+    #define  MC_factor 2
+#endif
+
+#ifndef NC_factor
+    #define  NC_factor 71
+#endif
+
+#define MC (MR * NTHREADS * MC_factor)
+#define NC (NR * NTHREADS * NC_factor)
+
+/*  it used to this (below)
+ *   #define MC (16 * NTHREADS * 2)
+ *   #define NC (6 * NTHREADS * 71)
+ */
+
+#ifndef KC
+    #define KC 800
+#endif
 
 static float blockA_packed[MC * KC] __attribute__((aligned(64)));
 static float blockB_packed[NC * KC] __attribute__((aligned(64)));

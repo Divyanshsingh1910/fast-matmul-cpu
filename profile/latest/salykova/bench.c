@@ -1,4 +1,8 @@
 // salykova.c
+// gcc -O3 -march=native -fopenmp bench.c matmul.c kernel.c -o salykova -DNTHREADS=72
+// -DMR=16 -DNR=6 -DMC_factor=2 -NC_factor=71
+
+#define _POSIX_C_SOURCE 199309L
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
