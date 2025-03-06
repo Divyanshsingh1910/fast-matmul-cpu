@@ -1,0 +1,15 @@
+{
+  "spellcheck": false,
+  "showLineNumber": false,
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "./attachements",
+  "readableLineLength": true,
+  "showInlineTitle": true,
+  "vimMode": false,
+  "pdfExportSettings": {
+    "pageSize": "Letter",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 100
+  }
+}

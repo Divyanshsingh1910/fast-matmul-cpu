@@ -1,0 +1,13 @@
+{
+  "accentColor": "",
+  "cssTheme": "",
+  "theme": "moonstone",
+  "enabledCssSnippets": [
+    "big-math",
+    "center-images",
+    "center-table"
+  ],
+  "baseFontSize": 16,
+  "showViewHeader": true,
+  "textFontFamily": ""
+}

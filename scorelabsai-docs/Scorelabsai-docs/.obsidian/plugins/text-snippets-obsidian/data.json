@@ -1,0 +1,16 @@
+{
+  "snippets_file": "snippets : It is an obsidian plugin, that replaces your selected text.\n\nbf : \\textbf{\nwtx : \\textbf{w}^T \\textbf{x}",
+  "snippets": [
+    "snippets : It is an obsidian plugin, that replaces your selected text.",
+    "bf : \\textbf{",
+    "wtx : \\textbf{w}^T \\textbf{x}"
+  ],
+  "endSymbol": "$end$",
+  "newlineSymbol": "$nl$",
+  "stopSymbol": "$tb$",
+  "pasteSymbol": "$pst$",
+  "useTab": false,
+  "useSpace": true,
+  "wordDelimiters": "$()[]{}<>,.!?;:'\"\\/",
+  "isWYSIWYG": true
+}

@@ -1,0 +1,228 @@
+{
+  "main": {
+    "id": "0925e9130ecfd874",
+    "type": "split",
+    "children": [
+      {
+        "id": "574ccdb659bbbc5d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "75ccc092c58862d8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Justine Tunney’s Llama-file.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "Justine Tunney’s Llama-file"
+            }
+          },
+          {
+            "id": "d714bf3f39b31ed8",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.8.7"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.8.7"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d14ed64b066a4eae",
+    "type": "split",
+    "children": [
+      {
+        "id": "58212e0a89ce2a7a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "07a8b23685e70b3d",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "0823c24771257747",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "98cb2f1d9c43990e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "98d48e4190dade1b",
+    "type": "split",
+    "children": [
+      {
+        "id": "189716666a333e1b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7925860c36c39f61",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "859ce67c31d64a4c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "9de46b3ab75c34be",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "ebb148b65b810207",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {},
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false
+    }
+  },
+  "active": "d714bf3f39b31ed8",
+  "lastOpenFiles": [
+    "diagram/matmul-cache-analysis.excalidraw",
+    "diagram",
+    "Justine Tunney’s Llama-file.md",
+    "Plan.md",
+    "attachements/Pasted image 20250129232356.png",
+    "attachements/Pasted image 20250129231752.png",
+    "attachements/Pasted image 20250129231645.png",
+    "scorelabsai/matmul-cache-analysis.excalidraw",
+    "Reading List.md",
+    "To do list.md",
+    "Excalidraw/Drawing 2025-01-25 15.15.30.excalidraw.md",
+    "Excalidraw",
+    "Ukulele.md",
+    "dribble.md",
+    "Lit review/Tree of Thoughts - Deliberate Problem Solvingwith Large Language Models.md",
+    "Lit review/Cramming-Training LLM.md",
+    "Better than yesterday.md",
+    "scorelabsai/SL To-do List.md",
+    "archive",
+    "scorelabsai/Readme.md",
+    "ai-resources/papers/2412.19437v1-deepseek-v3-tech-report.pdf",
+    "attachements/Pasted image 20241011161320.png",
+    "attachements/Pasted image 20240928165408.png",
+    "attachements/Pasted image 20241211160050.png",
+    "attachements/Pasted image 20241217152839.png",
+    "Ilya Reading List.md",
+    "ai-resources/papers/1706.03762v7-attention-is-all-you-need-google.pdf",
+    "Blogs/Scaling Test Time Compute/Paper Chronology.canvas",
+    "scorelabsai",
+    "ai-resources/papers/2411.07279v1-the-surprising-effectiveness-of-test-time-training-mit.pdf",
+    "ai-resources/papers/2305.10601v2-tree-of-thoughts-deepmind.pdf",
+    "ai-resources/papers/2201.11903v6-Chain-of-thought-google-research.pdf",
+    "archive/Placements/Cover Letters/Deepmind-Divyansh.md",
+    "Blogs/Scaling Test Time Compute/img/van-gauge-gemini.jpeg",
+    "archive/Placements/ML - CS771.md",
+    "archive/Placements/Statistics.md",
+    "archive/Placements/C++ & OOPs.md",
+    "archive/Placements/Coding Problems.md",
+    "Projects-ideas/ML - Based/ML - trade.md",
+    "Projects-ideas/ML - Based/Audio Pilot.md",
+    "Projects-ideas/Utility-for-all/IITK-Resources (Auto build).md",
+    "Projects-ideas/raspberry pi - hw/Home Security Camera system.md",
+    "Projects-ideas/raspberry pi - hw/OpenServer.md",
+    "Projects-ideas/ML - Based/Inbox zero.md",
+    "archive/Placements/Final Grind.md",
+    "archive/Placements/attachements/Pasted image 20241015192757.png",
+    "archive/Placements/attachements/Pasted image 20241015184727.png"
+  ]
+}
